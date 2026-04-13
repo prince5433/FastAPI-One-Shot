@@ -24,12 +24,12 @@ class ToDoResponse(ToDoCreate):
 @router.get('/', response_model=List[ToDoResponse]) 
 def Show_Todos(request: Request, db: Session = Depends(get_db)):
     todos = db.query(ToDo).all() 
-    return templates.TemplateResponse('todo_list.html', {"request": request, "todos": todos})
+    return templates.TemplateResponse(request=request, name='todo_list.html', context={"todos": todos})
 
 
 @router.get('/create') 
 def create_todo(request: Request):
-    return templates.TemplateResponse('create_todo.html', {'request': request})
+    return templates.TemplateResponse(request=request, name='create_todo.html', context={})
 
 @router.post('/create') 
 def create_todo(
@@ -49,7 +49,7 @@ def update_todo(todo_id: int, request : Request, db: Session = Depends(get_db)):
     todo = db.query(ToDo).filter(ToDo.id == todo_id).first()
     if not todo:
         return HTTPException(status_code=404, detail="Todo Not Found")
-    return templates.TemplateResponse('todo_edit.html', {'request': request, "todo": todo})
+    return templates.TemplateResponse(request=request, name='todo_edit.html', context={"todo": todo})
 
 @router.post('/update/{todo_id}', response_model=ToDoResponse)
 def update_todo(
